@@ -6,20 +6,14 @@ import { SimpleBarStyle } from "../../components/Scrollbar";
 import { ChatHeader, ChatFooter } from "../../components/Chat";
 import useResponsive from "../../hooks/useResponsive";
 import { Chat_History } from "../../data";
-import {
-  DocMsg,
-  LinkMsg,
-  MediaMsg,
-  ReplyMsg,
-  TextMsg,
-  Timeline,
-} from "../../sections/dashboard/Conversation";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchCurrentMessages,
   SetCurrentConversation,
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
+import { MediaMsg, Timeline, DocMsg, LinkMsg, ReplyMsg, TextMsg } from "../../sections/Dashboard/Conversation";
 
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
@@ -31,7 +25,7 @@ const Conversation = ({ isMobile, menu }) => {
 
   useEffect(() => {
     const current = conversations.find((el) => el?.id === room_id);
-
+    console.log("room_id", room_id, current);
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
       console.log(data, "List of messages");
@@ -39,7 +33,8 @@ const Conversation = ({ isMobile, menu }) => {
     });
 
     dispatch(SetCurrentConversation(current));
-  }, []);
+  }, [room_id]);
+  console.log("room_id", room_id);
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>

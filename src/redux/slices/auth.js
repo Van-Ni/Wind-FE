@@ -61,11 +61,11 @@ export function NewPassword(formValues) {
       .then(function (response) {
         console.log(response);
         dispatch(
-            slice.actions.logIn({
-              isLoggedIn: true,
-              token: response.data.token,
-            })
-          );
+          slice.actions.logIn({
+            isLoggedIn: true,
+            token: response.data.token,
+          })
+        );
         dispatch(
           showSnackbar({ severity: "success", message: response.data.message })
         );
@@ -207,11 +207,12 @@ export function RegisterUser(formValues) {
           slice.actions.updateIsLoading({ error: true, isLoading: false })
         );
       })
-      .finally(() => {
-        if (!getState().auth.error) {
-          window.location.href = "/auth/verify";
-        }
-      });
+      // .finally(() => {
+      //   if (!getState().auth.error) {
+      //     window.location.href = "/auth/verify";
+      //   }
+      // })
+      ;
   };
 }
 

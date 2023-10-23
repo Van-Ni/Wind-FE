@@ -17,7 +17,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { SimpleBarStyle } from "../../components/Scrollbar";
 import { CallLogElement } from "../../components/CallElement";
-import StartCall from "../../sections/dashboard/StartCall";
+// import StartCall from "../../sections/dashboard/StartCall";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchCallLogs } from "../../redux/slices/app";
 
@@ -101,9 +101,9 @@ const Call = () => {
           </Stack>
         </Box>
       </Stack>
-      {openDialog && (
+      {/* {openDialog && (
         <StartCall open={openDialog} handleClose={handleCloseDialog} />
-      )}
+      )} */}
     </>
   );
 };

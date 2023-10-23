@@ -64,6 +64,7 @@ const slice = createSlice({
       state.snackbar.message = null;
     },
     updateUsers(state, action) {
+      
       state.users = action.payload.users;
     },
     updateAllUsers(state, action) {
@@ -212,7 +213,27 @@ export function FetchFriendRequests() {
       });
   };
 }
+export function AddLike(postId) {
+  return async (dispatch, getState) => {
+    await axios
+      .get(
+        `/post/addlike/${postId}`,
 
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+}
 export const SelectConversation = ({ room_id }) => {
   return async (dispatch, getState) => {
     dispatch(slice.actions.selectConversation({ room_id }));

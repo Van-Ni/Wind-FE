@@ -3,7 +3,7 @@ import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { SelectConversation } from "../redux/slices/app";
+import { AddLike, SelectConversation } from "../redux/slices/app";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -46,7 +46,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
   const dispatch = useDispatch();
-  const {room_id} = useSelector((state) => state.app);
+  const { room_id } = useSelector((state) => state.app);
   const selectedChatId = room_id?.toString();
 
   let isSelected = +selectedChatId === id;
@@ -56,11 +56,15 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
   }
 
   const theme = useTheme();
-
+  
+  const addLike = () => {
+    dispatch(AddLike('653390837a5da5af4f259eb7'));
+  }
   return (
     <StyledChatBox
       onClick={() => {
-        dispatch(SelectConversation({room_id: id}));
+        // dispatch(SelectConversation({room_id: id}));
+        addLike();
       }}
       sx={{
         width: "100%",
@@ -72,8 +76,8 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
             ? alpha(theme.palette.primary.main, 0.5)
             : theme.palette.primary.main
           : theme.palette.mode === "light"
-          ? "#fff"
-          : theme.palette.background.paper,
+            ? "#fff"
+            : theme.palette.background.paper,
       }}
       p={2}
     >

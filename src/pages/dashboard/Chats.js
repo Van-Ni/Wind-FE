@@ -24,10 +24,12 @@ import {
   SearchIconWrapper,
   StyledInputBase,
 } from "../../components/Search";
-import Friends from "../../sections/dashboard/Friends";
+// import Friends from "../../sections/dashboard/Friends";
 import { socket } from "../../socket";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchDirectConversations } from "../../redux/slices/conversation";
+import Friends from "../../sections/Dashboard/Friends";
+import Form from "./Form";
 
 const user_id = window.localStorage.getItem("user_id");
 
@@ -41,13 +43,13 @@ const Chats = () => {
 
   useEffect(() => {
     socket.emit("get_direct_conversations", { user_id }, (data) => {
-      console.log(data); // this data is the list of conversations
+      console.log("get_direct_conversations", data); // this data is the list of conversations
       // dispatch action
 
       dispatch(FetchDirectConversations({ conversations: data }));
     });
   }, []);
-
+  console.log("conversations", conversations);
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleCloseDialog = () => {

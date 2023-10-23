@@ -87,7 +87,6 @@ const Contact = () => {
   const {current_conversation} = useSelector((state) => state.conversation.direct_chat);
 
   const theme = useTheme();
-
   const isDesktop = useResponsive("up", "md");
 
   const [openBlock, setOpenBlock] = useState(false);
@@ -142,13 +141,13 @@ const Contact = () => {
         >
           <Stack alignItems="center" direction="row" spacing={2}>
             <Avatar
-              src={current_conversation?.img}
-              alt={current_conversation?.name}
+              src={faker.image.avatar()}
+              alt={faker.name.firstName()}
               sx={{ height: 64, width: 64 }}
             />
             <Stack spacing={0.5}>
               <Typography variant="article" fontWeight={600}>
-                {current_conversation?.name}
+                {faker.name.fullName()}
               </Typography>
               <Typography variant="body2" fontWeight={500}>
                 {"+91 62543 28 739"}
@@ -180,7 +179,7 @@ const Contact = () => {
               About
             </Typography>
             <Typography variant="body2" fontWeight={500}>
-              {current_conversation?.about}
+              Hi there, I'm using 
             </Typography>
           </Stack>
           <Divider />

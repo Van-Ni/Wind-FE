@@ -14,7 +14,7 @@ import { Message_options } from "../../data";
 import { Link } from "react-router-dom";
 import truncateString from "../../utils/truncate";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
-import Embed from "react-embed";
+import Embed from 'react-embed';
 
 const MessageOption = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -184,11 +184,12 @@ const LinkMsg = ({ el, menu }) => {
             }}
           >
             <Stack direction={"column"} spacing={2}>
-              <Embed
+              {/* <Embed
                 width="300px"
                 isDark
-                url={`https://youtu.be/xoWxBR34qLE`}
-              />
+                url={`https://www.youtube.com/watch?v=g4Z-kRkWnU0&list=PLdLUE-L26MMbXYkddCi6Cb1jy5dKczosk&index=4&ab_channel=CodingMonk`}
+              /> */}
+              <Embed url='https://soundcloud.com/s1sh1/kravts-glupyy-molodoy-na-meli' />
             </Stack>
           </Stack>
           <Typography

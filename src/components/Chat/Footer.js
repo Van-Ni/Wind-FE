@@ -183,8 +183,8 @@ const Footer = () => {
 
       setValue(
         value.substring(0, selectionStart) +
-          emoji +
-          value.substring(selectionEnd)
+        emoji +
+        value.substring(selectionEnd)
       );
 
       // Move the cursor to the end of the inserted emoji

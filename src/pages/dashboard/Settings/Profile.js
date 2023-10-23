@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { CaretLeft } from "phosphor-react";
-import ProfileForm from "../../../sections/dashboard/Settings/ProfileForm";
 import { useDispatch } from "react-redux";
 import { FetchUserProfile } from "../../../redux/slices/app";
-
+// import ProfileForm from "../../../sections/dashboard/Settings/ProfileForm";
+import ShortcutDialog from "../../../sections/Dashboard/Settings/ShortcutDialog";
+import FormProfile from "../../../sections/Dashboard/Settings/FormProfile";
 const Profile = () => {
   const dispatch = useDispatch();
   
@@ -41,7 +42,7 @@ const Profile = () => {
             </Stack>
 
             {/* Profile Edit Form */}
-            <ProfileForm />
+            <FormProfile/>
           </Stack>
         </Box>
 
