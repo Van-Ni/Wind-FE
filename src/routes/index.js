@@ -8,6 +8,7 @@ import AuthLayout from "../layouts/auth";
 // config
 import { DEFAULT_PATH } from "../config";
 import LoadingScreen from "../components/LoadingScreen";
+import { HomeChat } from "../pages/home/HomeChat";
 
 const Loadable = (Component) => (props) => {
   return (
@@ -27,8 +28,13 @@ export default function Router() {
         { path: "register", element: <RegisterPage /> },
         { path: "reset-password", element: <ResetPasswordPage /> },
         { path: "new-password", element: <NewPasswordPage /> },
-        {path: "verify", element: <VerifyPage /> },
+        { path: "verify", element: <VerifyPage /> },
+        { path: "verifyOauth/:id/:token", element: <VerifyOauth /> }
       ],
+    },
+    {
+      path: "/home",
+      element: <HomeChat />,
     },
     {
       path: "/",
@@ -43,8 +49,8 @@ export default function Router() {
         //{ path: "contact", element: <Contact /> },
         { path: "profile", element: <Profile /> },
 
-        {path: "call", element: <CallPage />},
-        
+        { path: "call", element: <CallPage /> },
+
         { path: "404", element: <Page404 /> },
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
@@ -68,6 +74,7 @@ const Page404 = Loadable(lazy(() => import("../pages/Page404")));
 
 const LoginPage = Loadable(lazy(() => import("../pages/auth/Login")));
 const VerifyPage = Loadable(lazy(() => import("../pages/auth/Verify")));
+const VerifyOauth = Loadable(lazy(() => import("../pages/auth/Oauth")));
 const RegisterPage = Loadable(lazy(() => import("../pages/auth/Register")));
 const ResetPasswordPage = Loadable(
   lazy(() => import("../pages/auth/ResetPassword"))

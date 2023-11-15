@@ -1,6 +1,7 @@
 // @mui
-import { Divider, IconButton, Stack } from '@mui/material';
-import { GithubLogo, GoogleLogo, TwitterLogo } from 'phosphor-react';
+import { Button, Divider, IconButton, Stack } from '@mui/material';
+import { FacebookLogo, GithubLogo, GoogleLogo, TwitterLogo } from 'phosphor-react';
+import { BASE_URL } from '../../config';
 
 // ----------------------------------------------------------------------
 
@@ -8,19 +9,19 @@ export default function AuthSocial() {
 
 
   const handleGoogleLogin = async () => {
-
+    window.open(`${BASE_URL}auth/google`, "_self");
   };
 
   const handleGithubLogin = async () => {
-    
+    window.open(`${BASE_URL}auth/github`, "_self");
   };
 
-  const handleTwitterLogin = async () => {
-    
+  const handleFacebookLogin = async () => {
+    window.open(`${BASE_URL}auth/facebook`, "_self");
   };
 
   return (
-    <div>
+    <div style={{ marginTop: "0" }}>
       <Divider
         sx={{
           my: 2.5,
@@ -34,18 +35,17 @@ export default function AuthSocial() {
         OR
       </Divider>
 
-      <Stack direction="row" justifyContent="center" spacing={2}>
-        <IconButton onClick={handleGoogleLogin}>
-          <GoogleLogo color="#DF3E30" />
-        </IconButton>
+      <Stack direction="column" justifyContent="center" spacing={2}>
+        <Button variant="outlined" onClick={handleGoogleLogin} startIcon={<GoogleLogo color="#DF3E30" />}>
+          Login with Google
+        </Button>
+        <Button variant="outlined" onClick={handleGithubLogin} startIcon={<GithubLogo />}>
+          Login with Github
+        </Button>
+        <Button variant="outlined" onClick={handleFacebookLogin} startIcon={<FacebookLogo color="#1C9CEA" />}>
+          Login with Facebook
+        </Button>
 
-        <IconButton color="inherit" onClick={handleGithubLogin}>
-          <GithubLogo />
-        </IconButton>
-
-        <IconButton onClick={handleTwitterLogin}>
-          <TwitterLogo color="#1C9CEA" />
-        </IconButton>
       </Stack>
     </div>
   );

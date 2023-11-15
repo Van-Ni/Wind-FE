@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { CaretDown, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
+import { CaretDown, Chats, MagnifyingGlass, Phone, VideoCamera } from "phosphor-react";
 import { faker } from "@faker-js/faker";
 import useResponsive from "../../hooks/useResponsive";
 import { ToggleSidebar } from "../../redux/slices/app";
@@ -69,9 +69,19 @@ const ChatHeader = () => {
   const dispatch = useDispatch();
   const isMobile = useResponsive("between", "md", "xs", "sm");
   const theme = useTheme();
-
-  const {current_conversation} = useSelector((state) => state.conversation.direct_chat);
-
+  const [anchorElNotification, setAnchorElNotification] = React.useState(null);
+  const open = Boolean(anchorElNotification);
+  const handleClickNotification = (event) => {
+    setAnchorElNotification(event.currentTarget);
+  };
+  const handleCloseNotification = () => {
+    setAnchorElNotification(null);
+  };
+  const { current_conversation } = useSelector((state) => state.conversation.direct_chat);
+  const { notifications } = useSelector(
+    (state) => state.notification
+  );
+  console.log("notifications?.length", notifications.length);
   const [conversationMenuAnchorEl, setConversationMenuAnchorEl] =
     React.useState(null);
   const openConversationMenu = Boolean(conversationMenuAnchorEl);
@@ -135,7 +145,28 @@ const ChatHeader = () => {
             alignItems="center"
             spacing={isMobile ? 1 : 3}
           >
-            <IconButton onClick={() => {
+            <Badge
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClickNotification}
+              badgeContent={notifications.length} color="primary">
+              <Chats />
+            </Badge>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorElNotification}
+              open={open}
+              onClose={handleCloseNotification}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem>Profile</MenuItem>
+              <MenuItem>My account</MenuItem>
+              <MenuItem>Logout</MenuItem>
+            </Menu>
+            {/* <IconButton onClick={() => {
               dispatch(StartVideoCall(current_conversation.user_id));
             }}>
               <VideoCamera />
@@ -147,7 +178,7 @@ const ChatHeader = () => {
               }}
             >
               <Phone />
-            </IconButton>
+            </IconButton> */}
             {!isMobile && (
               <IconButton>
                 <MagnifyingGlass />
@@ -207,7 +238,7 @@ const ChatHeader = () => {
         </Stack>
       </Box>
 
-      
+
     </>
   );
 };

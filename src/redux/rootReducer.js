@@ -6,6 +6,7 @@ import audioCallReducer from './slices/audioCall';
 import videoCallReducer from './slices/videoCall';
 import authReducer from './slices/auth';
 import conversationReducer from './slices/conversation';
+import notificationReducer from './slices/notification';
 
 // ----------------------------------------------------------------------
 
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   conversation: conversationReducer,
   audioCall: audioCallReducer,
   videoCall: videoCallReducer,
+  notification: notificationReducer
 });
 
 export { rootPersistConfig, rootReducer };

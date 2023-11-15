@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "../../utils/axios";
 // import S3 from "../../utils/s3";
-import {v4} from 'uuid';
+import { v4 } from 'uuid';
 import S3 from "../../utils/s3";
 import { S3_BUCKET_NAME } from "../../config";
 // ----------------------------------------------------------------------
@@ -64,7 +64,7 @@ const slice = createSlice({
       state.snackbar.message = null;
     },
     updateUsers(state, action) {
-      
+
       state.users = action.payload.users;
     },
     updateAllUsers(state, action) {
@@ -94,18 +94,18 @@ export const closeSnackBar = () => async (dispatch, getState) => {
 
 export const showSnackbar =
   ({ severity, message }) =>
-  async (dispatch, getState) => {
-    dispatch(
-      slice.actions.openSnackBar({
-        message,
-        severity,
-      })
-    );
+    async (dispatch, getState) => {
+      dispatch(
+        slice.actions.openSnackBar({
+          message,
+          severity,
+        })
+      );
 
-    setTimeout(() => {
-      dispatch(slice.actions.closeSnackBar());
-    }, 4000);
-  };
+      setTimeout(() => {
+        dispatch(slice.actions.closeSnackBar());
+      }, 4000);
+    };
 
 export function ToggleSidebar() {
   return async (dispatch, getState) => {
@@ -234,6 +234,27 @@ export function AddLike(postId) {
       });
   };
 }
+export function RemoveLike(postId) {
+  return async (dispatch, getState) => {
+    await axios
+      .get(
+        `/post/removelike/${postId}`,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+}
 export const SelectConversation = ({ room_id }) => {
   return async (dispatch, getState) => {
     dispatch(slice.actions.selectConversation({ room_id }));
@@ -282,16 +303,16 @@ export const UpdateUserProfile = (formValues) => {
 
     const key = v4();
 
-    try{
+    try {
       S3.getSignedUrl(
         "putObject",
         { Bucket: S3_BUCKET_NAME, Key: key, ContentType: `image/${file.type}` },
         async (_err, presignedURL) => {
           await fetch(presignedURL, {
             method: "PUT",
-  
+
             body: file,
-  
+
             headers: {
               "Content-Type": file.type,
             },
@@ -299,11 +320,11 @@ export const UpdateUserProfile = (formValues) => {
         }
       );
     }
-    catch(error) {
+    catch (error) {
       console.log(error);
     }
 
-    
+
 
     axios
       .patch(
@@ -325,3 +346,39 @@ export const UpdateUserProfile = (formValues) => {
       });
   };
 };
+
+export function FileMessage(formData) {
+  return async (dispatch, getState) => {
+    await axios
+      .post("/user/file-message", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getState().auth.token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+}
+
+export function FileDownload(filePath) {
+  return async (dispatch, getState) => {
+    await axios
+      .get(`/user/download/${encodeURIComponent(filePath)}`, {
+        headers: {
+          Authorization: `Bearer ${getState().auth.token}`,
+          responseType: 'blob'
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+}

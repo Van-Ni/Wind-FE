@@ -13,8 +13,8 @@ export default function RHFCodes({ keyName = "", inputs = [], ...other }) {
 
   const handleChangeWithNextField = (event, handleChange) => {
     const { maxLength, value, name } = event.target;
-
     const fieldIndex = name.replace(keyName, "");
+    console.log( maxLength, value, name,  fieldIndex );
 
     const fieldIntIndex = Number(fieldIndex);
 

@@ -1,9 +1,8 @@
 import React from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
-import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { AddLike, SelectConversation } from "../redux/slices/app";
+import { SelectConversation } from "../redux/slices/app";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -57,14 +56,10 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
 
   const theme = useTheme();
   
-  const addLike = () => {
-    dispatch(AddLike('653390837a5da5af4f259eb7'));
-  }
   return (
     <StyledChatBox
       onClick={() => {
-        // dispatch(SelectConversation({room_id: id}));
-        addLike();
+        dispatch(SelectConversation({room_id: id}));
       }}
       sx={{
         width: "100%",

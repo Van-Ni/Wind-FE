@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import axios from "../../utils/axios";
 import { showSnackbar } from "./app";
-
 // ----------------------------------------------------------------------
 
 const initialState = {
@@ -163,7 +162,36 @@ export function LoginUser(formValues) {
       });
   };
 }
+export function LoginOauth(userId, token) {
+  return (dispatch, getState) => {
+    dispatch(
+      slice.actions.logIn({
+        isLoggedIn: true,
+        token,
+        user_id: userId,
+      })
+    );
+    window.localStorage.setItem("user_id", userId);
+  };
+}
+// export function LoginUser(formValues) {
+//   return async (dispatch, getState) => {
+//     // Make API call here
 
+//     // dispatch(slice.actions.updateIsLoading({ isLoading: true, error: false }));
+
+//     await axios
+//       .get(
+//         "/auth/google",
+//       )
+//       .then(function (response) {
+//         console.log(response);
+//       })
+//       .catch(function (error) {
+//         console.log(error);
+//       });
+//   };
+// }
 export function LogoutUser() {
   return async (dispatch, getState) => {
     window.localStorage.removeItem("user_id");
@@ -207,11 +235,11 @@ export function RegisterUser(formValues) {
           slice.actions.updateIsLoading({ error: true, isLoading: false })
         );
       })
-      // .finally(() => {
-      //   if (!getState().auth.error) {
-      //     window.location.href = "/auth/verify";
-      //   }
-      // })
+      .finally(() => {
+        if (!getState().auth.error) {
+          window.location.href = "/auth/verify";
+        }
+      })
       ;
   };
 }

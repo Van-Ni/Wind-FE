@@ -29,8 +29,8 @@ export default function AuthLoginForm() {
   });
 
   const defaultValues = {
-    email: "demo@tawk.com",
-    password: "demo1234",
+    email: "user@gmail.com",
+    password: "",
   };
 
   const methods = useForm({
@@ -59,7 +59,9 @@ export default function AuthLoginForm() {
       });
     }
   };
-
+  const google = () => {
+    window.open("http://localhost:3001/auth/google", "_self");
+  };
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>

@@ -6,6 +6,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import ChatComponent from "./Conversation";
 import Chats from "./Chats";
 import NoChat from "../../assets/Illustration/NoChat";
+import Robot from "../../assets/gif/robot.gif"
 import { useSelector } from "react-redux";
 import Contact from "../../sections/Dashboard/Contact";
 import StarredMessages from "../../sections/Dashboard/StarredMessages";
@@ -49,7 +50,7 @@ const GeneralApp = () => {
               alignItems="center"
               justifyContent={"center"}
             >
-              <NoChat />
+              <img src={Robot} alt="" />
               <Typography variant="subtitle2">
                 Select a conversation or start a{" "}
                 <Link

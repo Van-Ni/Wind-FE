@@ -1,8 +1,10 @@
 import {
+  Alert,
   Box,
   Fab,
   IconButton,
   InputAdornment,
+  Snackbar,
   Stack,
   TextField,
   Tooltip,
@@ -24,7 +26,10 @@ import useResponsive from "../../hooks/useResponsive";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { socket } from "../../socket";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { FileMessage } from "../../redux/slices/app";
+import { fileTypeValid, fileValid } from "../../utils/validate";
 
 const StyledInput = styled(TextField)(({ theme }) => ({
   "& .MuiInputBase-input": {
@@ -72,74 +77,120 @@ const ChatInput = ({
   setValue,
   value,
   inputRef,
+  conversation_id,
+  from,
+  to
 }) => {
+  const dispatch = useDispatch();
   const [openActions, setOpenActions] = React.useState(false);
+  const [errorMsgFile, setErrorMsgFile] = useState("");
+  const fileInputRef = useRef(null);
+  const handleIconButtonClick = () => {
+    fileInputRef.current.click();
+  };
+  const handleInputChange = (event) => {
+    // get the selected file from the input
+    const file = event.target.files[0];
 
+    const isfileValid = fileValid(file);
+    if (isfileValid) {
+      setErrorMsgFile(isfileValid);
+    } else {
+      const type = fileTypeValid(file);
+      // create a new FormData object and append the file to it
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("conversation_id", conversation_id);
+      formData.append("from", from);
+      formData.append("to", to);
+      formData.append("type", type);
+      dispatch(FileMessage(formData));
+    }
+    // socket.emit("file_message", {
+    //   file: formData,
+    //   conversation_id,
+    //   from,
+    //   to,
+    //   type: "Document",
+    // });
+
+  };
   return (
-    <StyledInput
-      inputRef={inputRef}
-      value={value}
-      onChange={(event) => {
-        setValue(event.target.value);
-      }}
-      fullWidth
-      placeholder="Write a message..."
-      variant="filled"
-      InputProps={{
-        disableUnderline: true,
-        startAdornment: (
-          <Stack sx={{ width: "max-content" }}>
-            <Stack
-              sx={{
-                position: "relative",
-                display: openActions ? "inline-block" : "none",
-              }}
-            >
-              {Actions.map((el) => (
-                <Tooltip placement="right" title={el.title}>
-                  <Fab
-                    onClick={() => {
-                      setOpenActions(!openActions);
-                    }}
-                    sx={{
-                      position: "absolute",
-                      top: -el.y,
-                      backgroundColor: el.color,
-                    }}
-                    aria-label="add"
-                  >
-                    {el.icon}
-                  </Fab>
-                </Tooltip>
-              ))}
-            </Stack>
+    <>
+      {errorMsgFile && (
+        <Snackbar open={errorMsgFile} autoHideDuration={1500} onClose={() => setErrorMsgFile("")}>
+          <Alert severity="error">{errorMsgFile}</Alert>
+        </Snackbar>
+      )}
+      <StyledInput
+        inputRef={inputRef}
+        value={value}
+        onChange={(event) => {
+          setValue(event.target.value);
+        }}
+        fullWidth
+        placeholder="Write a message..."
+        variant="filled"
+        InputProps={{
+          disableUnderline: true,
+          startAdornment: (
+            <Stack sx={{ width: "max-content" }}>
+              <Stack
+                sx={{
+                  position: "relative",
+                  display: openActions ? "inline-block" : "none",
+                }}
+              >
+                {Actions.map((el) => (
+                  <Tooltip placement="right" title={el.title}>
+                    <Fab
+                      onClick={() => {
+                        setOpenActions(!openActions);
+                      }}
+                      sx={{
+                        position: "absolute",
+                        top: -el.y,
+                        backgroundColor: el.color,
+                      }}
+                      aria-label="add"
+                    >
+                      {el.icon}
+                    </Fab>
+                  </Tooltip>
+                ))}
+              </Stack>
 
-            <InputAdornment>
-              <IconButton
-                onClick={() => {
-                  setOpenActions(!openActions);
-                }}
-              >
-                <LinkSimple />
-              </IconButton>
-            </InputAdornment>
-          </Stack>
-        ),
-        endAdornment: (
-          <Stack sx={{ position: "relative" }}>
-            <InputAdornment>
-              <IconButton
-                onClick={() => {
-                  setOpenPicker(!openPicker);
-                }}
-              >
-                <Smiley />
-              </IconButton>
-            </InputAdornment>
-          </Stack>
-        ),
-      }}
-    />
+              <InputAdornment>
+                <IconButton
+                  onClick={handleIconButtonClick}
+                >
+                  <LinkSimple />
+                </IconButton>
+                <input
+                  type="file"
+                  style={{ display: 'none' }}
+                  ref={fileInputRef}
+                  onChange={handleInputChange}
+                />
+              </InputAdornment>
+            </Stack>
+          ),
+          endAdornment: (
+            <Stack sx={{ position: "relative" }}>
+              <InputAdornment>
+                <IconButton
+                  onClick={() => {
+                    setOpenPicker(!openPicker);
+                  }}
+                >
+                  <Smiley />
+                </IconButton>
+              </InputAdornment>
+            </Stack>
+          ),
+        }}
+      />
+    </>
   );
 };
 
@@ -163,8 +214,7 @@ const Footer = () => {
     (state) => state.conversation.direct_chat
   );
 
-  const user_id = window.localStorage.getItem("user_id");
-
+  const user_id = window.localStorage.getItem("user_id") || 0;
   const isMobile = useResponsive("between", "md", "xs", "sm");
 
   const { sideBar, room_id } = useSelector((state) => state.app);
@@ -236,6 +286,9 @@ const Footer = () => {
               setValue={setValue}
               openPicker={openPicker}
               setOpenPicker={setOpenPicker}
+              conversation_id={room_id}
+              from={user_id || 0}
+              to={current_conversation?.user_id}
             />
           </Stack>
           <Box
@@ -256,8 +309,8 @@ const Footer = () => {
                   socket.emit("text_message", {
                     message: linkify(value),
                     conversation_id: room_id,
-                    from: user_id,
-                    to: current_conversation.user_id,
+                    from: user_id || 0,
+                    to: current_conversation?.user_id,
                     type: containsUrl(value) ? "Link" : "Text",
                   });
                 }}

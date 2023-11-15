@@ -15,7 +15,13 @@ import { Link } from "react-router-dom";
 import truncateString from "../../utils/truncate";
 import { LinkPreview } from "@dhaiwat10/react-link-preview";
 import Embed from 'react-embed';
-
+import { useDispatch } from "react-redux";
+import { FileDownload } from "../../redux/slices/app";
+const getFileName = (filename) => {
+  const lastSlashIndex = filename.lastIndexOf('\\');
+  const nameWithExtension = filename.substring(lastSlashIndex + 1);
+  return nameWithExtension;
+};
 const MessageOption = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -97,7 +103,7 @@ const MediaMsg = ({ el, menu }) => {
       >
         <Stack spacing={1}>
           <img
-            src={el.img}
+            src={el.filename}
             alt={el.message}
             style={{ maxHeight: 210, borderRadius: "10px" }}
           />
@@ -114,6 +120,12 @@ const MediaMsg = ({ el, menu }) => {
   );
 };
 const DocMsg = ({ el, menu }) => {
+  const dispatch = useDispatch();
+  const handleDownloadFile = (filePath) => {
+    dispatch(FileDownload(filePath)).then(data => {
+      console.log("file",data);
+    });
+  }
   const theme = useTheme();
   return (
     <Stack direction="row" justifyContent={el.incoming ? "start" : "end"}>
@@ -140,9 +152,9 @@ const DocMsg = ({ el, menu }) => {
             }}
           >
             <Image size={48} />
-            <Typography variant="caption">Abstract.png</Typography>
+            <Typography variant="caption">{getFileName(el?.filename)}</Typography>
             <IconButton>
-              <DownloadSimple />
+              <DownloadSimple onClick={() => handleDownloadFile(el?.filename)} />
             </IconButton>
           </Stack>
           <Typography

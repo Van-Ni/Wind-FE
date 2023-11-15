@@ -1,4 +1,4 @@
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Divider } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
 import { SimpleBarStyle } from "../../components/Scrollbar";
@@ -14,31 +14,115 @@ import {
 } from "../../redux/slices/conversation";
 import { socket } from "../../socket";
 import { MediaMsg, Timeline, DocMsg, LinkMsg, ReplyMsg, TextMsg } from "../../sections/Dashboard/Conversation";
-
+import moment from 'moment';
+import { useState } from "react";
+import { formatCreatedAtMessage } from "../../utils/formatTime";
+const user_id = window.localStorage.getItem("user_id");
 const Conversation = ({ isMobile, menu }) => {
   const dispatch = useDispatch();
-
   const { conversations, current_messages } = useSelector(
     (state) => state.conversation.direct_chat
   );
+  console.log("current_messages", current_messages);
   const { room_id } = useSelector((state) => state.app);
 
+ 
+  const handleMessages = (messages) => {
+    const groupedMessages = {};
+    messages.forEach((message, index) => {
+      // Lấy ngày và giờ từ trường "created_at" bằng Moment.js
+      const createdAt = moment(message.created_at);
+      const date = createdAt.format('ddd MMM DD YYYY');
+      const time = createdAt.format('HH:mm');
+      // Tạo khóa cho nhóm bằng cách kết hợp ngày và giờ
+      const key = `${date} ${time}`;
+      // Kiểm tra xem nhóm đã tồn tại chưa, nếu chưa thì tạo mới
+      if (!groupedMessages.hasOwnProperty(key)) {
+        groupedMessages[key] = {
+          createdAt: formatCreatedAtMessage(message.created_at),
+          messages: []
+        };
+      }
+      // Thêm tin nhắn vào nhóm tương ứng
+      groupedMessages[key].messages.push({
+        id: message._id,
+        type: "msg",
+        subtype: message.type,
+        message: message.text || "",
+        incoming: message.to === user_id,
+        outgoing: message.from === user_id,
+        filename: message.file || ""
+      });
+    });
+
+    // Kết quả sẽ là một mảng chứa các nhóm tin nhắn theo ngày và giờ
+    return Object.values(groupedMessages);
+  }
   useEffect(() => {
     const current = conversations.find((el) => el?.id === room_id);
-    console.log("room_id", room_id, current);
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
-      console.log(data, "List of messages");
-      dispatch(FetchCurrentMessages({ messages: data }));
+      const messages = handleMessages(data);
+      if(messages.length > 0) {
+        dispatch(FetchCurrentMessages({ messages }));
+      }
     });
 
     dispatch(SetCurrentConversation(current));
   }, [room_id]);
-  console.log("room_id", room_id);
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>
-        {current_messages.map((el, idx) => {
+        {current_messages.map((el, idx) => (
+          <>
+            <Divider>{el?.createdAt}</Divider>
+            {el?.messages.map((el, idx) => {
+              switch (el.type) {
+                case "divider":
+                  return (
+                    // Timeline
+                    <Timeline el={el} />
+                  );
+
+                case "msg":
+                  switch (el.subtype) {
+                    case "Image":
+                      return (
+                        // Media Message
+                        <MediaMsg el={el} menu={menu} />
+                      );
+
+                    case "Document":
+                      return (
+                        // Doc Message
+                        <DocMsg el={el} menu={menu} />
+                      );
+                    case "Link":
+                      return (
+                        //  Link Message
+                        <LinkMsg el={el} menu={menu} />
+                      );
+
+                    case "reply":
+                      return (
+                        //  ReplyMessage
+                        <ReplyMsg el={el} menu={menu} />
+                      );
+
+                    default:
+                      return (
+                        // Text Message
+                        <TextMsg el={el} menu={menu} />
+                      );
+                  }
+
+                default:
+                  return <></>;
+              }
+            })}
+          </>
+        ))}
+        {/* {current_messages.map((el, idx) => {
           switch (el.type) {
             case "divider":
               return (
@@ -54,7 +138,7 @@ const Conversation = ({ isMobile, menu }) => {
                     <MediaMsg el={el} menu={menu} />
                   );
 
-                case "doc":
+                case "Document":
                   return (
                     // Doc Message
                     <DocMsg el={el} menu={menu} />
@@ -81,7 +165,7 @@ const Conversation = ({ isMobile, menu }) => {
             default:
               return <></>;
           }
-        })}
+        })} */}
       </Stack>
     </Box>
   );

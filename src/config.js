@@ -12,7 +12,7 @@ export const AWS_SECRET_ACCESS_KEY = 'cU3BsDCxPIA1QE2u3SIArYKfO/Vn2C5J8jR+CSg5';
 export const AWS_S3_REGION = 'ap-south-1'; // eg. ap-south-1
 
 export const defaultSettings = {
-  themeMode: "light",
+  themeMode: "dark",
   themeDirection: "ltr",
   themeContrast: "default",
   themeLayout: "horizontal",

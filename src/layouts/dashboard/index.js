@@ -10,6 +10,8 @@ import {
   AddDirectConversation,
   AddDirectMessage,
 } from "../../redux/slices/conversation";
+
+import { setNotifications } from "../../redux/slices/notification";
 // import AudioCallNotification from "../../sections/dashboard/Audio/CallNotification";
 // import VideoCallNotification from "../../sections/dashboard/video/CallNotification";
 import {
@@ -20,6 +22,7 @@ import {
 // import VideoCallDialog from "../../sections/dashboard/video/CallDialog";
 import { PushToVideoCallQueue, UpdateVideoCallDialog } from "../../redux/slices/videoCall";
 import { connectSocket, socket } from "../../socket";
+import { formatCreatedAtMessage } from "../../utils/formatTime";
 
 const DashboardLayout = () => {
   const isDesktop = useResponsive("up", "md");
@@ -88,24 +91,28 @@ const DashboardLayout = () => {
       });
       socket.on("new_message", (data) => {
         const message = data.message;
-        console.log(current_conversation, data);
         // check if msg we got is from currently selected conversation
         if (current_conversation?.id === data.conversation_id) {
           dispatch(
             AddDirectMessage({
+              date: formatCreatedAtMessage(message.created_at),
               id: message._id,
               type: "msg",
               subtype: message.type,
-              message: message.text,
+              message: message.text || "",
               incoming: message.to === user_id,
               outgoing: message.from === user_id,
+              filename: message.file || ""
             })
           );
         }
-      });
-
-      socket.on('addlike', (post) => {
-        console.log("post", post);
+        if (current_conversation?.id === data.conversation_id && message.to === user_id) {
+          dispatch(setNotifications({
+            date: formatCreatedAtMessage(message.created_at),
+            message: message.text || "",
+            name: message.receiverUser.name || "",
+          }));
+        }
       });
       return () => {
         socket?.off("new_friend_request");
