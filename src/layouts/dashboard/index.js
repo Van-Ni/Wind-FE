@@ -9,6 +9,7 @@ import {
   UpdateDirectConversation,
   AddDirectConversation,
   AddDirectMessage,
+  addNotification,
 } from "../../redux/slices/conversation";
 
 import { setNotifications } from "../../redux/slices/notification";
@@ -93,6 +94,7 @@ const DashboardLayout = () => {
         const message = data.message;
         // check if msg we got is from currently selected conversation
         if (current_conversation?.id === data.conversation_id) {
+          // TODO: API remove notification
           dispatch(
             AddDirectMessage({
               date: formatCreatedAtMessage(message.created_at),
@@ -105,8 +107,17 @@ const DashboardLayout = () => {
               filename: message.file || ""
             })
           );
+        } else {
+          // TODO : add notification to state
+          dispatch(
+            addNotification({
+              conversation_id: data.conversation_id,
+              new_notification: 1
+            })
+          );
         }
         if (current_conversation?.id === data.conversation_id && message.to === user_id) {
+          // TODO: remove notification 
           dispatch(setNotifications({
             date: formatCreatedAtMessage(message.created_at),
             message: message.text || "",

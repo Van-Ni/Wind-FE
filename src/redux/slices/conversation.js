@@ -114,6 +114,13 @@ const slice = createSlice({
         })
       }
       // state.direct_chat.current_messages.push(action.payload.message);
+    },
+    addNotification(state, action) {
+      const { conversation_id, new_notification } = action.payload;
+      const existConverstation = state.direct_chat.conversations.find(c => c.id === conversation_id);
+      if (existConverstation) {
+        existConverstation.notifications += new_notification;
+      }
     }
   },
 });
@@ -155,5 +162,11 @@ export const FetchCurrentMessages = ({ messages }) => {
 export const AddDirectMessage = (message) => {
   return async (dispatch, getState) => {
     dispatch(slice.actions.addDirectMessage({ message }));
+  }
+}
+
+export const addNotification = (notfication) => {
+  return async (dispatch, getState) => {
+    dispatch(slice.actions.addNotification(notfication));
   }
 }
