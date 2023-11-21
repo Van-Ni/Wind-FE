@@ -43,7 +43,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
+const ChatElement = ({ img, name, msg, time, unread, online, id, notifications }) => {
   const dispatch = useDispatch();
   const { room_id } = useSelector((state) => state.app);
   const selectedChatId = room_id?.toString();
@@ -103,6 +103,8 @@ const ChatElement = ({ img, name, msg, time, unread, online, id }) => {
           <Typography sx={{ fontWeight: 600 }} variant="caption">
             {time}
           </Typography>
+          <Badge badgeContent={notifications} color="primary">
+          </Badge>
           <Badge
             className="unread-count"
             color="primary"

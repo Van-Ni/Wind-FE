@@ -27,13 +27,13 @@ const slice = createSlice({
           user_id: user?._id,
           name: `${user?.firstName} ${user?.lastName}`,
           online: user?.status === "Online",
-          // img: `https://${S3_BUCKET_NAME}.s3.${AWS_S3_REGION}.amazonaws.com/${user?.avatar}`,
           img: faker.image.avatar(),
-          msg: faker.music.songName(),// el.messages.slice(-1)[0].text
-          time: "9:36",
+          msg: faker.music.songName(),
+          time: "11:11",
           unread: 0,
           pinned: false,
           about: user?.about,
+          notifications: el?.notifications.filter(n => n.receiver === user_id).length
         };
       });
 
@@ -56,7 +56,7 @@ const slice = createSlice({
               online: user?.status === "Online",
               img: faker.image.avatar(),
               msg: faker.music.songName(),
-              time: "9:36",
+              time: "11:11",
               unread: 0,
               pinned: false,
             };
@@ -79,7 +79,7 @@ const slice = createSlice({
         online: user?.status === "Online",
         img: faker.image.avatar(),
         msg: faker.music.songName(),
-        time: "9:36",
+        time: "11:11",
         unread: 0,
         pinned: false,
       });
