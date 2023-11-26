@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { faker } from "@faker-js/faker";
 import { AWS_S3_REGION, S3_BUCKET_NAME } from "../../config";
+import { showSnackbar } from "./app";
+import axios from "../../utils/axios";
 
 const user_id = window.localStorage.getItem("user_id");
 
@@ -115,12 +117,26 @@ const slice = createSlice({
       }
       // state.direct_chat.current_messages.push(action.payload.message);
     },
-    addNotification(state, action) {
-      const { conversation_id, new_notification } = action.payload;
-      const existConverstation = state.direct_chat.conversations.find(c => c.id === conversation_id);
-      if (existConverstation) {
-        existConverstation.notifications += new_notification;
-      }
+    addOrUpdateNotification(state, action) {
+      const { conversation_id, new_notification, type } = action.payload;
+      console.log("state.direct_chat.conversations",state.direct_chat.conversations);
+      const conversations = JSON.parse(JSON.stringify(state.direct_chat.conversations)).map(conversation => {
+        if (conversation.id === conversation_id) {
+          if (type === 0) {
+            return {
+              ...conversation,
+              notifications: conversation.notifications + new_notification
+            };
+          } else {
+            return {
+              ...conversation,
+              notifications: 0
+            };
+          }
+        }
+        return conversation;
+      });
+      state.direct_chat.conversations = conversations;
     }
   },
 });
@@ -165,8 +181,24 @@ export const AddDirectMessage = (message) => {
   }
 }
 
-export const addNotification = (notfication) => {
+export const addOrUpdateNotification = (notification) => {
   return async (dispatch, getState) => {
-    dispatch(slice.actions.addNotification(notfication));
+    dispatch(slice.actions.addOrUpdateNotification(notification));
+    if (notification.type === 1) {
+      await axios
+        .put(`/oneToOne/notification/${notification.conversation_id}`, {}, {
+          headers: {
+            Authorization: `Bearer ${getState().auth.token}`,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(showSnackbar({ severity: 'error', message: error.message }));
+        });
+    }
   }
 }
+

@@ -9,7 +9,7 @@ import {
   UpdateDirectConversation,
   AddDirectConversation,
   AddDirectMessage,
-  addNotification,
+  addOrUpdateNotification,
 } from "../../redux/slices/conversation";
 
 import { setNotifications } from "../../redux/slices/notification";
@@ -110,7 +110,8 @@ const DashboardLayout = () => {
         } else {
           // TODO : add notification to state
           dispatch(
-            addNotification({
+            addOrUpdateNotification({
+              type: 0,
               conversation_id: data.conversation_id,
               new_notification: 1
             })
@@ -133,7 +134,7 @@ const DashboardLayout = () => {
       };
     }
 
-  }, [isLoggedIn, socket])
+  }, [isLoggedIn, socket,current_conversation])
 
   // useEffect(() => {
   //   if (isLoggedIn) {

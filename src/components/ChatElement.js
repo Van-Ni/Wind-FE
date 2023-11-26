@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Badge, Stack, Avatar, Typography } from "@mui/material";
 import { styled, useTheme, alpha } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectConversation } from "../redux/slices/app";
+import { addOrUpdateNotification } from "../redux/slices/conversation";
 
 const truncateText = (string, n) => {
   return string?.length > n ? `${string?.slice(0, n)}...` : string;
@@ -55,11 +56,25 @@ const ChatElement = ({ img, name, msg, time, unread, online, id, notifications }
   }
 
   const theme = useTheme();
-  
+  useEffect(() => {
+    if (notifications > 0) {
+      /**
+       * @Feature: remove notifications
+       * call api remove notification of conversation by id
+       * remove state of conversation with notification is zero
+       */
+      dispatch(
+        addOrUpdateNotification({
+          type: 1,
+          conversation_id: room_id,
+        })
+      );
+    }
+  }, [room_id]);
   return (
     <StyledChatBox
       onClick={() => {
-        dispatch(SelectConversation({room_id: id}));
+        dispatch(SelectConversation({ room_id: id }));
       }}
       sx={{
         width: "100%",
