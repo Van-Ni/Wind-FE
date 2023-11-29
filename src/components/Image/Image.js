@@ -32,6 +32,7 @@ const Image = forwardRef(
             width: 1,
             height: 1,
             backgroundSize: 'cover !important',
+            filter: "unset",
           },
           ...sx,
         }}

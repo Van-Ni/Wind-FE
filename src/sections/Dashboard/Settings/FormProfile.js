@@ -18,16 +18,16 @@ const FormProfile = () => {
 
   const ProfileSchema = Yup.object().shape({
     firstName: Yup.string().required("Name is required"),
-    about: Yup.string().required("About is required"),
+    lastName: Yup.string().required("Name is required"),
     avatar: Yup.string().required("Avatar is required").nullable(true),
   });
 
   const defaultValues = {
     firstName: user?.firstName,
-    about: user?.about,
-    avatar: ``,
+    lastName: user?.lastName,
+    avatar: user?.avatar?.url
   };
-
+  console.log(defaultValues);
   const methods = useForm({
     resolver: yupResolver(ProfileSchema),
     defaultValues,
@@ -48,12 +48,12 @@ const FormProfile = () => {
     try {
       //   Send API request
       console.log("DATA", data);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("firstName", data?.firstName);
+      formData.append("lastName", data?.lastName);
       dispatch(
-        UpdateUserProfile({
-          firstName: data?.firstName,
-          about: data?.about,
-          avatar: file,
-        })
+        UpdateUserProfile(formData)
       );
     } catch (error) {
       console.error(error);
@@ -69,7 +69,7 @@ const FormProfile = () => {
       const newFile = Object.assign(file, {
         preview: URL.createObjectURL(file),
       });
-
+      console.log('newFile', newFile);
       if (file) {
         setValue("avatar", newFile, { shouldValidate: true });
       }
@@ -83,11 +83,14 @@ const FormProfile = () => {
         <RHFUploadAvatar name="avatar" maxSize={3145728} onDrop={handleDrop} />
 
         <RHFTextField
-          helperText={"This name is visible to your contacts"}
           name="firstName"
           label="First Name"
         />
-        <RHFTextField multiline rows={4} name="about" label="About" />
+        <RHFTextField
+          name="lastName"
+          label="Last Name"
+        />
+        {/* <RHFTextField multiline rows={4} name="about" label="About" /> */}
 
         <Stack direction={"row"} justifyContent="end">
           <LoadingButton
@@ -95,7 +98,7 @@ const FormProfile = () => {
             size="large"
             type="submit"
             variant="contained"
-            // loading={isSubmitSuccessful || isSubmitting}
+          // loading={isSubmitSuccessful || isSubmitting}
           >
             Save
           </LoadingButton>
