@@ -7,7 +7,8 @@ export default function Oauth() {
     const dispatch = useDispatch();
     const { id, token } = useParams();
     useEffect(() => {
-        if (id) {
+        if (id && token) {
+            console.log(id, token);
             dispatch(LoginOauth(id,token));
         }
     }, [id])

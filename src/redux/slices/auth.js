@@ -167,7 +167,7 @@ export function LoginOauth(userId, token) {
     dispatch(
       slice.actions.logIn({
         isLoggedIn: true,
-        token,
+        token: token,
         user_id: userId,
       })
     );
