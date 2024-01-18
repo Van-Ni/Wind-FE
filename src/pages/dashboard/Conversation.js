@@ -58,13 +58,16 @@ const Conversation = ({ isMobile, menu }) => {
     // Kết quả sẽ là một mảng chứa các nhóm tin nhắn theo ngày và giờ
     return Object.values(groupedMessages);
   }
+  
   useEffect(() => {
     const current = conversations.find((el) => el?.id === room_id);
+    console.log("current", current);
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
+      console.log("get_messages", data);
       const messages = handleMessages(data);
+      dispatch(FetchCurrentMessages({ messages }));
       if(messages.length > 0) {
-        dispatch(FetchCurrentMessages({ messages }));
       }
     });
 

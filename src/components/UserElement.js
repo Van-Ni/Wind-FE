@@ -11,7 +11,7 @@ import {
 import { styled, useTheme } from "@mui/material/styles";
 import { Chat } from "phosphor-react";
 import { socket } from "../socket";
-
+import { CiCircleRemove } from "react-icons/ci";
 const user_id = window.localStorage.getItem("user_id");
 
 const StyledChatBox = styled(Box)(({ theme }) => ({
@@ -156,8 +156,14 @@ const FriendRequestElement = ({
               socket.emit("accept_request", { request_id: id });
             }}
           >
-            Accept Request
+            Accept
           </Button>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => socket.emit("deny_request", { request_id: id })}
+          >
+            <CiCircleRemove style={{ fontSize: "20px" }} />
+          </div>
         </Stack>
       </Stack>
     </StyledChatBox>
@@ -221,6 +227,12 @@ const FriendElement = ({
           >
             <Chat />
           </IconButton>
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => socket.emit("unfriend_request", { user_id, friend_id: _id })}
+            >
+              <CiCircleRemove style={{ fontSize: "20px" }} />
+            </div>
         </Stack>
       </Stack>
     </StyledChatBox>
