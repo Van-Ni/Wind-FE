@@ -26,6 +26,7 @@ const initialState = {
   chat_type: null,
   room_id: null,
   call_logs: [],
+  isLoading: false,
 };
 
 const slice = createSlice({
@@ -80,6 +81,9 @@ const slice = createSlice({
       state.chat_type = "individual";
       state.room_id = action.payload.room_id;
     },
+    updateIsLoading(state, action) {
+      state.isLoading = action.payload.isLoading;
+    },
   },
 });
 
@@ -125,6 +129,7 @@ export function UpdateTab(tab) {
 
 export function FetchUsers() {
   return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true }));
     await axios
       .get(
         "/user/get-users",
@@ -139,6 +144,8 @@ export function FetchUsers() {
       .then((response) => {
         console.log(response);
         dispatch(slice.actions.updateUsers({ users: response.data.data }));
+        dispatch(slice.actions.updateIsLoading({ isLoading: false }));
+
       })
       .catch((err) => {
         console.log(err);
@@ -147,6 +154,7 @@ export function FetchUsers() {
 }
 export function FetchAllUsers() {
   return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true }));
     await axios
       .get(
         "/user/get-all-verified-users",
@@ -161,6 +169,7 @@ export function FetchAllUsers() {
       .then((response) => {
         console.log(response);
         dispatch(slice.actions.updateAllUsers({ users: response.data.data }));
+        dispatch(slice.actions.updateIsLoading({ isLoading: false }));
       })
       .catch((err) => {
         console.log(err);
@@ -169,6 +178,7 @@ export function FetchAllUsers() {
 }
 export function FetchFriends() {
   return async (dispatch, getState) => {
+    dispatch(slice.actions.updateIsLoading({ isLoading: true }));
     await axios
       .get(
         "/user/get-friends",
@@ -183,6 +193,8 @@ export function FetchFriends() {
       .then((response) => {
         console.log(response);
         dispatch(slice.actions.updateFriends({ friends: response.data.data }));
+        dispatch(slice.actions.updateIsLoading({ isLoading: false }));
+
       })
       .catch((err) => {
         console.log(err);
@@ -336,7 +348,7 @@ export const UpdateUserProfile = (formValues) => {
         }
       )
       .then((response) => {
-        console.log("updateUser",response);
+        console.log("updateUser", response);
         // dispatch(slice.actions.updateUser({ user: response.data.data }));
       })
       .catch((err) => {

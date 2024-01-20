@@ -29,7 +29,7 @@ const slice = createSlice({
           user_id: user?._id,
           name: `${user?.firstName} ${user?.lastName}`,
           online: user?.status === "Online",
-          img: faker.image.avatar(),
+          img: user.avatar.url || faker.image.avatar(),
           msg: faker.music.songName(),
           time: "11:11",
           unread: 0,
@@ -119,7 +119,7 @@ const slice = createSlice({
     },
     addOrUpdateNotification(state, action) {
       const { conversation_id, new_notification, type } = action.payload;
-      console.log("state.direct_chat.conversations",state.direct_chat.conversations);
+      console.log("state.direct_chat.conversations", state.direct_chat.conversations);
       const conversations = JSON.parse(JSON.stringify(state.direct_chat.conversations)).map(conversation => {
         if (conversation.id === conversation_id) {
           if (type === 0) {

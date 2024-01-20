@@ -49,7 +49,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const UserElement = ({ img, firstName, lastName, online, _id }) => {
+const UserElement = ({ img, firstName, lastName, online, _id, avatar }) => {
   const theme = useTheme();
 
   const name = `${firstName} ${lastName}`;
@@ -78,10 +78,10 @@ const UserElement = ({ img, firstName, lastName, online, _id }) => {
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={avatar?.url} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={avatar?.url} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -111,6 +111,7 @@ const FriendRequestElement = ({
   missed,
   online,
   id,
+  avatar
 }) => {
   const theme = useTheme();
 
@@ -140,10 +141,10 @@ const FriendRequestElement = ({
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={avatar?.url} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={avatar?.url} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -179,6 +180,7 @@ const FriendElement = ({
   incoming,
   missed,
   online,
+  avatar,
   _id,
 }) => {
   const theme = useTheme();
@@ -209,10 +211,10 @@ const FriendElement = ({
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
               variant="dot"
             >
-              <Avatar alt={name} src={img} />
+              <Avatar alt={name} src={avatar?.url} />
             </StyledBadge>
           ) : (
-            <Avatar alt={name} src={img} />
+            <Avatar alt={name} src={avatar?.url} />
           )}
           <Stack spacing={0.3}>
             <Typography variant="subtitle2">{name}</Typography>
@@ -227,12 +229,12 @@ const FriendElement = ({
           >
             <Chat />
           </IconButton>
-            <div
-              style={{ cursor: "pointer" }}
-              onClick={() => socket.emit("unfriend_request", { user_id, friend_id: _id })}
-            >
-              <CiCircleRemove style={{ fontSize: "20px" }} />
-            </div>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => socket.emit("unfriend_request", { user_id, friend_id: _id })}
+          >
+            <CiCircleRemove style={{ fontSize: "20px" }} />
+          </div>
         </Stack>
       </Stack>
     </StyledChatBox>

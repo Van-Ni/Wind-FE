@@ -30,25 +30,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { FetchDirectConversations } from "../../redux/slices/conversation";
 import Friends from "../../sections/Dashboard/Friends";
 import Form from "./Form";
+import SkeletonUser from "../../components/loading/skeletonUser";
 
 const user_id = window.localStorage.getItem("user_id");
 
 const Chats = () => {
   const theme = useTheme();
   const isDesktop = useResponsive("up", "md");
-
+  const [isLoading, setIsLoading] = useState(false);
+ 
   const dispatch = useDispatch();
 
-  const {conversations} = useSelector((state) => state.conversation.direct_chat);
+  const { conversations } = useSelector((state) => state.conversation.direct_chat);
 
   useEffect(() => {
+    setIsLoading(true);
     socket.emit("get_direct_conversations", { user_id }, (data) => {
       console.log("get_direct_conversations", data); // this data is the list of conversations
       // dispatch action
-
-      dispatch(FetchDirectConversations({ conversations: data }));
+      if (data.length > 0) {
+        setIsLoading(false);
+        dispatch(FetchDirectConversations({ conversations: data }));
+      }
     });
   }, []);
+  console.log("isloading", isLoading);
   console.log("conversations", conversations);
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -132,10 +138,11 @@ const Chats = () => {
                 <Typography variant="subtitle2" sx={{ color: "#676667" }}>
                   All Chats
                 </Typography>
-                {/* Chat List */}
-                {conversations.filter((el) => !el.pinned).map((el, idx) => {
-                  return <ChatElement {...el} />;
-                })}
+                {isLoading ? <SkeletonUser cards={3} /> : (
+                  conversations.filter((el) => !el.pinned).map((el, idx) => {
+                    return <ChatElement {...el} />;
+                  })
+                )}
               </Stack>
             </SimpleBarStyle>
           </Stack>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Dialog, DialogContent, Slide, Stack, Tab, Tabs } from "@mui/material";
+import { Box, Dialog, DialogContent, Slide, Stack, Tab, Tabs, CircularProgress } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchFriendRequests,
@@ -15,12 +15,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const UsersList = () => {
   const dispatch = useDispatch();
 
-  const { users } = useSelector((state) => state.app);
+  const { users, isLoading } = useSelector((state) => state.app);
 
   useEffect(() => {
     dispatch(FetchUsers());
   }, []);
 
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <>
       {users.map((el, idx) => {
@@ -33,12 +40,20 @@ const UsersList = () => {
 const FriendsList = () => {
   const dispatch = useDispatch();
 
-  const { friends } = useSelector((state) => state.app);
+  const { friends, isLoading } = useSelector((state) => state.app);
 
+  console.log("friends", friends);
   useEffect(() => {
     dispatch(FetchFriends());
   }, []);
 
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <>
       {friends.map((el, idx) => {
@@ -51,12 +66,19 @@ const FriendsList = () => {
 const RequestsList = () => {
   const dispatch = useDispatch();
 
-  const { friendRequests } = useSelector((state) => state.app);
+  const { friendRequests, isLoading } = useSelector((state) => state.app);
 
   useEffect(() => {
     dispatch(FetchFriendRequests());
   }, []);
 
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
   return (
     <>
       {friendRequests.map((el, idx) => {

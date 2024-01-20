@@ -1,4 +1,4 @@
-import { Stack, Box, Divider } from "@mui/material";
+import { Stack, Box, Divider, CircularProgress } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "@mui/material/styles";
 import { SimpleBarStyle } from "../../components/Scrollbar";
@@ -23,10 +23,12 @@ const Conversation = ({ isMobile, menu }) => {
   const { conversations, current_messages } = useSelector(
     (state) => state.conversation.direct_chat
   );
+  const [isLoading, setIsLoading] = useState(false);
+
   console.log("current_messages", current_messages);
   const { room_id } = useSelector((state) => state.app);
 
- 
+
   const handleMessages = (messages) => {
     const groupedMessages = {};
     messages.forEach((message, index) => {
@@ -39,7 +41,7 @@ const Conversation = ({ isMobile, menu }) => {
       // Kiểm tra xem nhóm đã tồn tại chưa, nếu chưa thì tạo mới
       if (!groupedMessages.hasOwnProperty(key)) {
         groupedMessages[key] = {
-          createdAt: formatCreatedAtMessage(message.created_at),
+          createdAt: message.created_at,
           messages: []
         };
       }
@@ -58,21 +60,28 @@ const Conversation = ({ isMobile, menu }) => {
     // Kết quả sẽ là một mảng chứa các nhóm tin nhắn theo ngày và giờ
     return Object.values(groupedMessages);
   }
-  
+
   useEffect(() => {
+    setIsLoading(true);
     const current = conversations.find((el) => el?.id === room_id);
     console.log("current", current);
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
       console.log("get_messages", data);
       const messages = handleMessages(data);
+      console.log("get_messages", messages);
       dispatch(FetchCurrentMessages({ messages }));
-      if(messages.length > 0) {
-      }
+      setIsLoading(false);
+
     });
 
     dispatch(SetCurrentConversation(current));
   }, [room_id]);
+  if (isLoading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+      <CircularProgress />
+    </Box>
+  )
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>
@@ -125,50 +134,6 @@ const Conversation = ({ isMobile, menu }) => {
             })}
           </>
         ))}
-        {/* {current_messages.map((el, idx) => {
-          switch (el.type) {
-            case "divider":
-              return (
-                // Timeline
-                <Timeline el={el} />
-              );
-
-            case "msg":
-              switch (el.subtype) {
-                case "img":
-                  return (
-                    // Media Message
-                    <MediaMsg el={el} menu={menu} />
-                  );
-
-                case "Document":
-                  return (
-                    // Doc Message
-                    <DocMsg el={el} menu={menu} />
-                  );
-                case "Link":
-                  return (
-                    //  Link Message
-                    <LinkMsg el={el} menu={menu} />
-                  );
-
-                case "reply":
-                  return (
-                    //  ReplyMessage
-                    <ReplyMsg el={el} menu={menu} />
-                  );
-
-                default:
-                  return (
-                    // Text Message
-                    <TextMsg el={el} menu={menu} />
-                  );
-              }
-
-            default:
-              return <></>;
-          }
-        })} */}
       </Stack>
     </Box>
   );
