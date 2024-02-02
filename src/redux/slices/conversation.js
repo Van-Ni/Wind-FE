@@ -90,18 +90,18 @@ const slice = createSlice({
       state.direct_chat.current_conversation = action.payload;
     },
     fetchCurrentMessages(state, action) {
-      // const messages = action.payload.messages;
-      // console.log("messages",messages);
-      // const formatted_messages = messages.map((el) => ({
-      //   id: el._id,
-      //   type: "msg",
-      //   subtype: el.type,
-      //   message: el.text || "",
-      //   incoming: el.to === user_id,
-      //   outgoing: el.from === user_id,
-      //   filename: el.file || ""
-      // }));
-      state.direct_chat.current_messages = action.payload.messages;
+      const messages = action.payload.messages;
+      console.log("messages", messages);
+      const formatted_messages = messages.map((el) => ({
+        id: el._id,
+        type: "msg",
+        subtype: el.type,
+        message: el.text || "",
+        incoming: el.to === user_id,
+        outgoing: el.from === user_id,
+        filename: el.file || ""
+      }));
+      state.direct_chat.current_messages = formatted_messages;
     },
     addDirectMessage(state, action) {
       const { message } = action.payload;

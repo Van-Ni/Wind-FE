@@ -29,37 +29,37 @@ const Conversation = ({ isMobile, menu }) => {
   const { room_id } = useSelector((state) => state.app);
 
 
-  const handleMessages = (messages) => {
-    const groupedMessages = {};
-    messages.forEach((message, index) => {
-      // Lấy ngày và giờ từ trường "created_at" bằng Moment.js
-      const createdAt = moment(message.created_at);
-      const date = createdAt.format('ddd MMM DD YYYY');
-      const time = createdAt.format('HH:mm');
-      // Tạo khóa cho nhóm bằng cách kết hợp ngày và giờ
-      const key = `${date} ${time}`;
-      // Kiểm tra xem nhóm đã tồn tại chưa, nếu chưa thì tạo mới
-      if (!groupedMessages.hasOwnProperty(key)) {
-        groupedMessages[key] = {
-          createdAt: message.created_at,
-          messages: []
-        };
-      }
-      // Thêm tin nhắn vào nhóm tương ứng
-      groupedMessages[key].messages.push({
-        id: message._id,
-        type: "msg",
-        subtype: message.type,
-        message: message.text || "",
-        incoming: message.to === user_id,
-        outgoing: message.from === user_id,
-        filename: message.file || ""
-      });
-    });
+  // const handleMessages = (messages) => {
+  //   const groupedMessages = {};
+  //   messages.forEach((message, index) => {
+  //     // Lấy ngày và giờ từ trường "created_at" bằng Moment.js
+  //     const createdAt = moment(message.created_at);
+  //     const date = createdAt.format('ddd MMM DD YYYY');
+  //     const time = createdAt.format('HH:mm');
+  //     // Tạo khóa cho nhóm bằng cách kết hợp ngày và giờ
+  //     const key = `${date} ${time}`;
+  //     // Kiểm tra xem nhóm đã tồn tại chưa, nếu chưa thì tạo mới
+  //     if (!groupedMessages.hasOwnProperty(key)) {
+  //       groupedMessages[key] = {
+  //         createdAt: message.created_at,
+  //         messages: []
+  //       };
+  //     }
+  //     // Thêm tin nhắn vào nhóm tương ứng
+  //     groupedMessages[key].messages.push({
+  //       id: message._id,
+  //       type: "msg",
+  //       subtype: message.type,
+  //       message: message.text || "",
+  //       incoming: message.to === user_id,
+  //       outgoing: message.from === user_id,
+  //       filename: message.file || ""
+  //     });
+  //   });
 
-    // Kết quả sẽ là một mảng chứa các nhóm tin nhắn theo ngày và giờ
-    return Object.values(groupedMessages);
-  }
+  //   // Kết quả sẽ là một mảng chứa các nhóm tin nhắn theo ngày và giờ
+  //   return Object.values(groupedMessages);
+  // }
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,9 +68,9 @@ const Conversation = ({ isMobile, menu }) => {
     socket.emit("get_messages", { conversation_id: current?.id }, (data) => {
       // data => list of messages
       console.log("get_messages", data);
-      const messages = handleMessages(data);
-      console.log("get_messages", messages);
-      dispatch(FetchCurrentMessages({ messages }));
+      // const messages = handleMessages(data);
+      // console.log("get_messages", messages);
+      dispatch(FetchCurrentMessages({ messages: data }));
       setIsLoading(false);
 
     });
@@ -85,55 +85,50 @@ const Conversation = ({ isMobile, menu }) => {
   return (
     <Box p={isMobile ? 1 : 3}>
       <Stack spacing={3}>
-        {current_messages.map((el, idx) => (
-          <>
-            <Divider>{el?.createdAt}</Divider>
-            {el?.messages.map((el, idx) => {
-              switch (el.type) {
-                case "divider":
-                  return (
-                    // Timeline
-                    <Timeline el={el} />
-                  );
-
-                case "msg":
-                  switch (el.subtype) {
-                    case "Image":
-                      return (
-                        // Media Message
-                        <MediaMsg el={el} menu={menu} />
-                      );
-
-                    case "Document":
-                      return (
-                        // Doc Message
-                        <DocMsg el={el} menu={menu} />
-                      );
-                    case "Link":
-                      return (
-                        //  Link Message
-                        <LinkMsg el={el} menu={menu} />
-                      );
-
-                    case "reply":
-                      return (
-                        //  ReplyMessage
-                        <ReplyMsg el={el} menu={menu} />
-                      );
-
-                    default:
-                      return (
-                        // Text Message
-                        <TextMsg el={el} menu={menu} />
-                      );
-                  }
-
-                default:
-                  return <></>;
-              }
-            })}
-          </>
-        ))}
+        {current_messages.length > 0 &&
+          current_messages.map((el, idx) => {
+            switch (el.type) {
+              case "divider":
+                return (
+                  // Timeline
+                  <Timeline el={el} />
+                );
+              case "msg":
+                switch (el.subtype) {
+                  case "Image":
+                    return (
+                      // Media Message
+                      <MediaMsg el={el} menu={menu} />
+                    );
+                  case "Document":
+                    return (
+                      // Doc Message
+                      <DocMsg el={el} menu={menu} />
+                    );
+                  case "Link":
+                    return (
+                      // Link Message
+                      <LinkMsg el={el} menu={menu} />
+                    );
+                  case "reply":
+                    return (
+                      // ReplyMessage
+                      <ReplyMsg el={el} menu={menu} />
+                    );
+                  default:
+                    return (
+                      // Text Message
+                      <TextMsg
+                        el={el}
+                        createdAt={el.createdAt}
+                        menu={menu}
+                      />
+                    );
+                }
+              default:
+                return null;
+            }
+          })}
       </Stack>
     </Box>
   );
