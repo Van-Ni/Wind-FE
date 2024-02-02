@@ -99,7 +99,8 @@ const slice = createSlice({
         message: el.text || "",
         incoming: el.to === user_id,
         outgoing: el.from === user_id,
-        filename: el.file || ""
+        filename: el.file || "",
+        createdAt: el.created_at
       }));
       state.direct_chat.current_messages = formatted_messages;
     },
