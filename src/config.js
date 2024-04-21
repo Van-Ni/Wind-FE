@@ -4,7 +4,7 @@ import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale';
 // routes
 import { PATH_DASHBOARD } from "./routes/paths";
 
-export const BASE_URL = "http://localhost:3001/";
+export const BASE_URL = "https://wind-be.onrender.com/";
 
 export const S3_BUCKET_NAME = 'codingmonk';
 export const AWS_ACCESS_KEY = 'AKIARPJQ4HSYLBIK2TDE';

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from "../../utils/axios";
+import { BASE_URL } from '../../config';
 const Form = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [content, setContent] = useState('');
@@ -13,7 +14,7 @@ const Form = () => {
         try {
             const response = await axios({
                 method: "post",
-                url: "http://localhost:3001/post",
+                url: `${BASE_URL}post`,
                 data: formData,
                 headers: { 
                     "Accept" : "*/*",
