@@ -86,7 +86,7 @@ const TextMsg = ({ el, menu, createdAt }) => {
             </Typography>
           </Box>
           <Typography variant="caption">
-            {format(createdAt)}
+            {format(createdAt,"vi")}
           </Typography>
         </Stack>
         <br />

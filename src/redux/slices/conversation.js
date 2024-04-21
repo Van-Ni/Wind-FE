@@ -29,7 +29,7 @@ const slice = createSlice({
           user_id: user?._id,
           name: `${user?.firstName} ${user?.lastName}`,
           online: user?.status === "Online",
-          img: user.avatar.url || faker.image.avatar(),
+          img: user?.avatar?.url || faker.image.avatar(),
           msg: faker.music.songName(),
           time: "11:11",
           unread: 0,
@@ -97,26 +97,26 @@ const slice = createSlice({
         type: "msg",
         subtype: el.type,
         message: el.text || "",
-        incoming: el.to === user_id,
-        outgoing: el.from === user_id,
+        incoming: el.to === user_id, // gửi đến 
+        outgoing: el.from === user_id, // gửi đi 
         filename: el.file || "",
         createdAt: el.created_at
       }));
       state.direct_chat.current_messages = formatted_messages;
     },
     addDirectMessage(state, action) {
-      const { message } = action.payload;
-      const { date, ...rest } = message;
-      const existCurrentMessage = state.direct_chat.current_messages.find(x => x.createdAt.includes(date));
-      if (existCurrentMessage) {
-        existCurrentMessage.messages.push({ ...rest });
-      } else {
-        state.direct_chat.current_messages.push({
-          createdAt: date,
-          messages: [{ ...rest }]
-        })
-      }
-      // state.direct_chat.current_messages.push(action.payload.message);
+      // const { message } = action.payload;
+      // const { date, ...rest } = message;
+      // const existCurrentMessage = state.direct_chat.current_messages.find(x => x.createdAt.includes(date));
+      // if (existCurrentMessage) {
+      //   existCurrentMessage.messages.push({ ...rest });
+      // } else {
+      //   state.direct_chat.current_messages.push({
+      //     createdAt: date,
+      //     messages: [{ ...rest }]
+      //   })
+      // }
+      state.direct_chat.current_messages.push(action.payload.message);
     },
     addOrUpdateNotification(state, action) {
       const { conversation_id, new_notification, type } = action.payload;

@@ -76,7 +76,7 @@ const DashboardLayout = () => {
         );
       });
       socket.on("start_chat", (data) => {
-        console.log(data);
+        console.log('🚀 ~ socket.on ~ start_chat:', data)
         // add / update to conversation list
         const existing_conversation = conversations.find(
           (el) => el?.id === data._id
