@@ -36,16 +36,15 @@ export default function AuthSocial() {
       </Divider>
 
       <Stack direction="column" justifyContent="center" spacing={2}>
-        <Button variant="outlined" onClick={handleGoogleLogin} startIcon={<GoogleLogo color="#DF3E30" />}>
+        {/* <Button variant="outlined" onClick={handleGoogleLogin} startIcon={<GoogleLogo color="#DF3E30" />}>
           Login with Google
         </Button>
         <Button variant="outlined" onClick={handleGithubLogin} startIcon={<GithubLogo />}>
           Login with Github
-        </Button>
-        <Button variant="outlined" onClick={handleFacebookLogin} startIcon={<FacebookLogo color="#1C9CEA" />}>
+        </Button> */}
+        {/* <Button variant="outlined" onClick={handleFacebookLogin} startIcon={<FacebookLogo color="#1C9CEA" />}>
           Login with Facebook
-        </Button>
-
+        </Button> */}
       </Stack>
     </div>
   );

@@ -179,7 +179,7 @@ const FriendElement = ({
   lastName,
   incoming,
   missed,
-  online,
+  status,
   avatar,
   _id,
 }) => {
@@ -205,7 +205,7 @@ const FriendElement = ({
       >
         <Stack direction="row" alignItems={"center"} spacing={2}>
           {" "}
-          {online ? (
+          {status == "Online" ? (
             <StyledBadge
               overlap="circular"
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
